@@ -1,0 +1,11 @@
+#create venv
+python -m venv venv
+
+#run on windows
+venv\Scripts\activate.bat
+
+#run on linux
+source venv/bin/activate
+
+#run FastApi
+fastapi dev source/main.py
