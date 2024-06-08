@@ -7,5 +7,11 @@ venv\Scripts\activate.bat
 #run on linux
 source venv/bin/activate
 
-#run FastApi
-fastapi dev source/main.py
+#run FastApi local
+fastapi dev app/main.py
+
+sudo docker-compose up -d
+
+#enter database
+docker run -d --name insight---python_db_1 -p 5432:5432 -e POSTGRES_PASSWORD=postgresAdmin postgresAdmin
+psql -h localhost -U 'postgresadmin' postgres
