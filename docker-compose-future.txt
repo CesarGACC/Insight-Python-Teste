@@ -1,0 +1,29 @@
+version: "3"
+services:
+  insightpython:
+    image: insightpython
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - insightproject
+
+  db:
+    image: postgres
+    build:
+      context: .
+      dockerfile: postgres.Dockerfile
+    ports:
+      - 5400:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: ${PGDATA}
+    networks:
+      - insightproject
+
+networks:
+  insightproject:

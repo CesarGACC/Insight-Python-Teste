@@ -5,6 +5,7 @@ WORKDIR /code
 
 # 
 COPY ./requirements.txt /code/requirements.txt
+COPY ./lista_paises.json /code/lista_paises.json
 
 # 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt

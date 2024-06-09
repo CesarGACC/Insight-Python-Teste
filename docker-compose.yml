@@ -10,20 +10,5 @@ services:
     networks:
       - insightproject
 
-  db:
-    image: postgres
-    build:
-      context: .
-      dockerfile: postgres.Dockerfile
-    ports:
-      - 5400:5432
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      PGDATA: ${PGDATA}
-    networks:
-      - insightproject
-
 networks:
   insightproject:
