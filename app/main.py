@@ -13,13 +13,13 @@ def read_root():
 async def ibge_pais():
     return Response(content=ibge_requests.lista_paises(), media_type='application/json')
 
-@app.get("/ibge/indicadores/")
-async def ibge_pais():
-    return Response(content=ibge_requests.lista_indicadores(), media_type='application/json')
-
 @app.get("/ibge/pais/{pais_string}")
 async def ibge_apto_pais(pais_string: str):
     return Response(content=ibge_requests.apto_pais(pais_string), media_type='application/json')
+
+@app.get("/ibge/indicadores/")
+async def ibge_pais():
+    return Response(content=ibge_requests.lista_indicadores(), media_type='application/json')
 
 @app.get("/ibge/pais/{pais_string}/indicadores/{indicador_tipo}")
 async def ibge_apto_pais_indicadores(pais_string: str, indicador_tipo:str):

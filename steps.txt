@@ -10,8 +10,18 @@ source venv/bin/activate
 #run FastApi local
 fastapi dev app/main.py
 
+
+sudo docker-compose stop
+sudo docker-compose build
 sudo docker-compose up -d
 
 #enter database
 docker run -d --name insight---python_db_1 -p 5432:5432 -e POSTGRES_PASSWORD=postgresAdmin postgresAdmin
 psql -h localhost -U 'postgresadmin' postgres
+
+#print(apto_pais("XX"))
+#print(apto_pais_indicadores("","BR","Economia"))
+#print(apto_pais_indicadores("","BR","Bleg"))
+#print(apto_pais_indicadores("XX|BR|CN", "XX", ""))
+#print(apto_pais_indicadores("BR", "BR", ""))
+#print(apto_pais_indicadores("AR|CN","BR","Economia"))

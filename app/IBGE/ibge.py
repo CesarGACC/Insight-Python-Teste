@@ -8,12 +8,13 @@ from typing import Dict
 
 def apto_pais(pais:str):
     if(not validation_pais(pais)): return False
+    if(not validation_bloco("BR|RU|IN|CN|ZA")): return False
 
     gerar_indicadores()
     list_indicadores = ["Economia","Indicadores sociais","Meio Ambiente","População","Redes","Saúde"]
     string_indicadores = get_string_indicadores(list_indicadores)
     
-    string_bloco = gerar_bloco("",string_indicadores)
+    string_bloco = gerar_bloco("BR|RU|IN|CN|ZA",string_indicadores)
 
     df_bloco = get_bloco()
     df_bloco_intermiatiate = get_intermitiate_dataframe(df_bloco)
@@ -65,6 +66,9 @@ def validation_pais(pais:str):
     return True
 
 def validation_bloco(bloco:str):
+    if(bloco==""):
+        return True
+
     lista_bloco = string_to_list(bloco)
 
     found = False
@@ -125,9 +129,6 @@ def get_valor_por_indicador(df:pd.DataFrame, indicador:str):
     
 def get_intermitiate_dataframe(dt_base:pd.DataFrame)-> pd.DataFrame:
 
-    if(len(dt_base["series"])==0):
-        dt_base = gerar_pais("BR","")
-
     result = []
     dt_base = dt_base.explode("series")
     dt_base["unidade"] = [item["id"] if isinstance(item, Dict) else None for item in dt_base["unidade"]]
@@ -185,17 +186,29 @@ def get_string_indicadores(list_indicadores):
 def pais_e_apto(df_bloco:pd.DataFrame, df_pais:pd.DataFrame, pais:str, string_bloco:str):
     unique_indicadores = df_bloco["indicador"].unique()
     result = []
+
+    indicadores_apto = pd.read_csv("gerar_indicadores_aptos.csv")
     for indicador in unique_indicadores:
         brics_value = get_valor_por_indicador(df_bloco,indicador) 
         pais_value = get_valor_por_indicador(df_pais,indicador) 
         unidade = get_unidade_por_indicador(indicador)
         
-        if(brics_value > pais_value):
-            #print(f"Indicador {indicador}: ({pais_value}) é menor que a referencia ({brics_value}) ")
-            apto = False
-        else:
-            #print(f"Indicador {indicador}: ({pais_value}) é maior que a referencia ({brics_value}) ")
+        i_apto = indicadores_apto.query(f"indicador==\'{indicador.split(' - ')[1]}\'")["apto"].values[0]
+
+        if(i_apto == "neutro"):
             apto = True
+        elif(i_apto == "maior"):
+            if(brics_value <= pais_value):
+                apto = True
+            else:
+                apto = False
+        elif(i_apto == "menor"):
+            if(brics_value >= pais_value):
+                apto = True
+            else:
+                apto = False
+
+            
         result.append([indicador, brics_value, pais_value, unidade, apto])
 
     dt_result = pd.DataFrame(result, columns=["indicador", "referencia", "valor", "unidade", "apto"])
@@ -231,10 +244,3 @@ def lista_indicadores():
     parsed = json.loads(get_indicadores().to_json(orient="table"))
     parsed.pop("schema")
     return json.dumps(parsed, indent=4, ensure_ascii=False)
-
-#print(apto_pais("XX"))
-#print(apto_pais_indicadores("","BR","Economia"))
-#print(apto_pais_indicadores("","BR","Bleg"))
-#print(apto_pais_indicadores("XX|BR|CN", "XX", ""))
-#print(apto_pais_indicadores("BR", "BR", ""))
-#print(apto_pais_indicadores("AR|CN","BR","Economia"))
